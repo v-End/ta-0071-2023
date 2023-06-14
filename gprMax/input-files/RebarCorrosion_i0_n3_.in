@@ -1,0 +1,41 @@
+----- Dimensions
+
+#messages: n
+#domain: 0.3 0.2 0.001
+#dx_dy_dz: 0.001 0.001 0.001
+#time_window: 6.4e-9
+
+----- Materials
+
+#material: 4.5 1e-8 1 0 concrete
+#material: 2 0.056 1 0.01 rebar
+#material: 40 1.5e-6 3.5 0.3 rebarcorrosion
+
+----- GPR
+
+#waveform: ricker 1 4.2e9 rickerwave
+#hertzian_dipole: z 0.01 0.15 0 rickerwave
+#rx: 0.04 0.15 0
+#src_steps: 0.002 0 0
+#rx_steps: 0.002 0 0
+
+----- Objects
+
+#box: 0 0 0 0.3 0.15 0.001 concrete
+
+1:
+#cylinder: 0.07 0.08 0 0.07 0.08 0.001 0.011 rebar y
+2:
+#cylinder: 0.15 0.08 0 0.15 0.08 0.001 0.011 rebar y
+3:
+#cylinder: 0.22 0.08 0 0.22 0.08 0.001 0.011 rebar y
+
+----- Misc
+
+--#geometry_view: 0 0 0 0.3 0.2 0.001 0.001 0.001 0.001 RebarCorrosion_i0_n3_geo n
+
+--python:
+from gprMax.input_cmd_funcs import *
+for i in range(1, 31):
+    snapshot(0, 0, 0, 0.3, 0.2, 0.001, 0.001, 0.001, 0.001, (i/10)*1e-9, 'snapshot' + str(i))
+--end_python:

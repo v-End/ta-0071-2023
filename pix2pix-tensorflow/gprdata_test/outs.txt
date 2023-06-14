@@ -1,0 +1,4 @@
+40 images for testing
+36 correct on corrosion presence
+22 correct on number of corroded rebar, 3 maybe
+11 correct on rebar number

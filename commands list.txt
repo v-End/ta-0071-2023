@@ -1,0 +1,31 @@
+--- PIX2PIX ---
+
+python gprdata/removenames.py
+
+python tools/process.py --input_dir gprdata/input/processed/amp --b_dir gprdata/desired/bordered --operation combine --output_dir gprdata/combined/amp
+
+python tools/split.py --dir gprdata/combined/freq
+
+python pix2pix.py --mode train --output_dir gprdata_train --max_epochs 1000 --input_dir gprdata_input/amp/train --which_direction AtoB --display_freq 50
+
+python pix2pix.py --mode train --output_dir gprdata_train --checkpoint gprdata_train --max_epochs 1000 --input_dir gprdata_input/amp/train --which_direction AtoB --display_freq 50
+
+python pix2pix.py --mode test --output_dir gprdata_test --input_dir gprdata_input/amp/val --checkpoint gprdata_train
+
+tensorboard --host 0.0.0.0 --logdir=gprdata_train
+
+--- CycleGAN ---
+
+python build_data.py --X_input_dir data/gprdata/trainA --Y_input_dir data/gprdata/trainB --X_output_file data/tfrecords/geo.tfrecords --Y_output_file data/tfrecords/gpr.tfrecords
+
+python train.py --X=data/tfrecords/gpr.tfrecords --Y=data/tfrecords/geo.tfrecords --load-model 20230607-1900
+
+python export_graph.py --checkpoint_dir checkpoints/20230607-1900 --XtoY_model gpr2geo.pb --YtoX_model geo2gpr.pb --image_size 256
+
+python inference.py --model pretrained/gpr2geo.pb --input data/gprdata/testA/RebarCorrosion_i100_n2.png --output data/gprdata/testA/RebarCorrosion_i101_n4.png --image_size 256
+
+tensorboard --logdir checkpoints/20230607-1900 --host 0.0.0.0 --port 6007
+
+--- LSGAN ---
+
+--- YOLOv5 ---
